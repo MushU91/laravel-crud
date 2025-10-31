@@ -5,7 +5,7 @@ namespace App\Http\Controllers\OJT;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Student;
-
+use Illuminate\Support\Facades\Log;
 class StudentController extends Controller
 {
     /**
@@ -31,6 +31,7 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
+        Log::info('The Result are:', $request->all());
         // 1. Validate form inputs
         $request->validate([
             'name' => 'required|string|max:255',
@@ -63,13 +64,8 @@ class StudentController extends Controller
      */
     public function edit(string $id)
 {
-    $students = [
-        'name' => 'la',
-        'age' => 21,
-        'address' => 'Mangon'
-    ];
-
-    return view('students.edit', compact('students'));
+    $student= Student::findOrFail($id);
+    return view('students.edit', compact('student'));
 }
 
 
@@ -78,7 +74,16 @@ class StudentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'age' => 'required|integer',
+            'address' => 'required|string|max:255',
+        ]);
+
+        $student= Student::findOrFail($id);   //single student model
+        $student->update($request->only(['name','age','address']));
+
+        return redirect()->route('students.index')->with('success','Student updated Successfully');
     }
 
     /**
@@ -86,6 +91,9 @@ class StudentController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $student= Student::findOrFail($id);
+        $student->delete();
+
+        return redirect()->route('students.index')->with('success', 'Student deleted successfully');
     }
 }
