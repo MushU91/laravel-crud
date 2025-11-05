@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- responsive scaling -->
+
     <title>Student CRUD</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -33,8 +36,8 @@
             /* push footer down */
         }
         footer{
-            background-color: #A6D784;
-            color: black;
+            background-color: #7d75ce ;
+            color: #F9E3D7  ;
             text-align: center;
             padding: 10px 0;
             font-weight: bold;
@@ -54,6 +57,9 @@
 </svg>
 
     </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav mx-auto">
         <li class="nav-item">
@@ -68,6 +74,9 @@
         <li class="nav-item">
           <a class="nav-link" href="{{route('contact')}}">Contact</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{route('user')}}">Verify</a>
+        </li>
       </ul>
     </div>
   </div>
@@ -80,5 +89,7 @@
 <footer>
     &copy; 2025 Student CRUD
 </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
