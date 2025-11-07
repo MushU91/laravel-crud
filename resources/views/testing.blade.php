@@ -3,6 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <title>Laravel Validation Example</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .container{
+            position: relative;
+            display: inline-block;
+        }
+        .container input {
+            width: 150px;
+            padding: 8px 30px 8px 10px;
+            font-size: 15px;
+        }
+        .bi-calendar3 {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #555;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
   <h2>Laravel 11 Validation Example</h2>
@@ -48,7 +70,13 @@
 @enderror
 <br><br>
 
-<input type="date" name="date" value="{{ old('date') }}">
+<div class="container">
+    <input type="text" name="date" id="dateInput" value="{{old('date')}}" placeholder="yyyy-mm-dd">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar3" id="calendarBtn" viewBox="0 0 16 16">
+        <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>
+        <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
+    </svg>
+</div><br>
 @error('date')
     <span style="color:red;">{{ $message }}</span>
 @enderror
@@ -130,5 +158,16 @@
 <input type="submit" value="Submit">
 
   </form>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script>
+    const fp = flatpickr("#dateInput", {
+        dateFormat: "Y-m-d",
+        allowInput: false
+    });
+
+      document.getElementById("calendarBtn").addEventListener("click", function() {
+      fp.open();
+    });
+  </script>
 </body>
 </html>

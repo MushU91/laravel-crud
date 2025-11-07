@@ -21,7 +21,7 @@ class StoreFormRequest extends FormRequest
             'text_field' => ['required', 'string', 'max:255'],
 
             // Email
-            'email' => ['required', 'email:rfc,dns', 'max:255', Rule::unique('users', 'email')->ignore($this->user()->id ?? null)],
+            'email' => ['required', 'email:dns', 'max:255', Rule::unique('users', 'email')->ignore($this->user()->id ?? null)],
 
             // Password
             'password' => ['required', Password::min(8)->letters()->numbers()->symbols()->mixedCase()],
@@ -30,7 +30,7 @@ class StoreFormRequest extends FormRequest
             'number' => ['required', 'numeric', 'min:1', 'max:100'],
 
             // Date
-            'date' => ['required', 'date'],
+            'date' => ['required', 'date_format:Y-m-d'],
 
             // Datetime-local
             'datetime_local' => ['required', 'date_format:Y-m-d\TH:i'],
