@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\OJT;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreBlogPost;
+use App\Http\Requests\UpdateRequest;
 use Illuminate\Http\Request;
 use App\Models\Student;
 use Illuminate\Support\Facades\Log;
@@ -13,6 +15,7 @@ class StudentController extends Controller
      */
     public function index()
     {
+        
         $students = Student::all(); //fetch all rows from DB
         return view('students.index', compact('students'));
 
@@ -29,23 +32,25 @@ class StudentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreBlogPost $request)
     {
-        Log::info('The Result are:', $request->all());
+        // $url = $request->fullUrl();
+        // Log::info('current url:' . $url);
+        // Log::info('The Result are:', $request->all());
+
         // 1. Validate form inputs
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'age' => 'required|integer',
-            'address' => 'required|string|max:255',
-        ]);
+        // $request->validate([
+        //     'name' => 'required|string|max:255',
+        //     'age' => 'required|integer',
+        //     'address' => 'required|string|max:255',
+        // ]);
+
+        $data = $request->validated();
         
         //2. insert data into database using eloquent
+        Log::info($data);
 
-        Student::create([
-            'name' => $request->name,
-            'age' => $request->age,
-            'address' => $request->address,
-        ]);
+        Student::create($data);
 
         //3. redirect back to list page
         return redirect()->route('students.index')->with('success', 'Student added successfully');
@@ -62,8 +67,14 @@ class StudentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit( Request $request ,string $id)
 {
+    $url = $request->fullUrl();
+    Log::info('full url is :' . $url);
+
+    $url = $request->url();
+    Log::info(' url is :' . $url);
+    
     $student= Student::findOrFail($id);
     return view('students.edit', compact('student'));
 }
@@ -72,13 +83,14 @@ class StudentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateRequest $request, string $id)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'age' => 'required|integer',
-            'address' => 'required|string|max:255',
-        ]);
+        // $request->validate([
+        //     'name' => 'required|string|max:255',
+        //     'age' => 'required|integer',
+        //     'address' => 'required|string|max:255',
+        // ]);
+    
 
         $student= Student::findOrFail($id);   //single student model
         $student->update($request->only(['name','age','address']));

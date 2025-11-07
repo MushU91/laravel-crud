@@ -3,6 +3,7 @@
 use App\Http\Controllers\OJT\StudentController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TestController;
 
 // Redirect root to students index
 Route::get('/', function () {
@@ -71,3 +72,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/user/dashboard', [AuthController::class, 'userDashboard'])->name('user.dashboard');
 });
+
+//testing
+Route::get('/form', [TestController::class,'show']);
+
+Route::post('/form',[TestController::class,'submit'])->name('form.submit');
