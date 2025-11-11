@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\OJT\StudentController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CityTownshipController;
+use App\Http\Controllers\EmployerEmployeeController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestController;
 
@@ -77,3 +80,12 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/form', [TestController::class,'show']);
 
 Route::post('/form',[TestController::class,'submit'])->name('form.submit');
+
+//query builder employer
+Route::get('/employers', [EmployerEmployeeController::class, 'index']);
+
+//city
+Route::get('/cities', [CityTownshipController::class, 'index'])->name('cities.index');
+
+//product
+Route::get('/products' , [ProductController::class, 'index'])->name('products.index');
