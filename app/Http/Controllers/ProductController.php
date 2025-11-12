@@ -8,10 +8,14 @@ use App\Models\Product;
 class ProductController extends Controller
 {
     //
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::latest()->paginate(8);
+        //default per 5 pages
+        $perPage = $request->input('per_page', 5);
 
-        return view('products.index', compact('products'));
+        $products = Product::latest()->paginate($perPage)->withQueryString();
+
+        return view('products.index', compact('products', 'perPage'));
     }
 }
+
