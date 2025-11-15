@@ -40,9 +40,18 @@
 
         <button type="submit" class="btn btn-success my-5">Add Student</button>
         <div class="btn-danger btn">
-        <a href="{{route('students.index')}} " class="text-white" style="text-decoration: none">GO BACK</a>
-    </div>
+            <a href="{{route('students.index')}} " class="text-white" style="text-decoration: none">GO BACK</a>
+        </div>
 
+    </form>
+
+    <form action="{{ route('students.import') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        <div class="my-3">
+            <label for="file" class="form-label">Upload Excel File:</label>
+            <input type="file" name="file" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-warning">Import Students</button>
     </form>
     
 @endsection

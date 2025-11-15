@@ -89,3 +89,6 @@ Route::get('/cities', [CityTownshipController::class, 'index'])->name('cities.in
 
 //product
 Route::get('/products' , [ProductController::class, 'index'])->name('products.index');
+
+//student import export
+Route::post('/students/import', [StudentController::class, 'import'])->name('students.import');

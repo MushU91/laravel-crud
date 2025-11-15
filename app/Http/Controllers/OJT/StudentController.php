@@ -5,9 +5,12 @@ namespace App\Http\Controllers\OJT;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBlogPost;
 use App\Http\Requests\UpdateRequest;
+use App\Imports\StudentsImport;
 use Illuminate\Http\Request;
 use App\Models\Student;
 use Illuminate\Support\Facades\Log;
+
+use Maatwebsite\Excel\Facades\Excel;
 class StudentController extends Controller
 {
     /**
@@ -107,5 +110,16 @@ class StudentController extends Controller
         $student->delete();
 
         return redirect()->route('students.index')->with('success', 'Student deleted successfully');
+    }
+
+    public function import (Request $request)
+    {
+        $request -> validate([
+            'file' => 'required|mimes:xlsx,xls,csv',
+        ]);
+
+        Excel::import(new StudentsImport, $request->file('file'));
+
+        return redirect()->route('students.index')->with('success', 'Students imported successfully');
     }
 }
