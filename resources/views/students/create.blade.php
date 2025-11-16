@@ -18,6 +18,21 @@
         </div>
     @endif
 
+    {{-- show import errors (from Excel import) --}}
+    @if (session('import_errors'))
+        <div class="alert alert-danger">
+            <ul>
+                @foreach (session('import_errors') as $err)
+                    <li>{{ $err }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
+
 
     {{-- form that sends data to store() --}}
     <form action="{{route('students.store')}}" method="POST">
@@ -44,6 +59,10 @@
         </div>
 
     </form>
+
+    <hr>
+    <h2>Download Excel Format</h2>
+    <a href="{{route('students.template')}}">Download Template</a>
 
     <form action="{{ route('students.import') }}" method="POST" enctype="multipart/form-data">
         @csrf

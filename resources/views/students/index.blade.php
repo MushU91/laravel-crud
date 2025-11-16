@@ -6,6 +6,11 @@
     <a href="{{ route('students.create') }}" class="btn btn-primary">Add Student</a>
 </div>
 
+<div>
+    <a href="{{route('students.export')}}">Download Excel</a>
+</div>
+
+
 @if(session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
 @endif

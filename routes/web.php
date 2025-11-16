@@ -92,3 +92,9 @@ Route::get('/products' , [ProductController::class, 'index'])->name('products.in
 
 //student import export
 Route::post('/students/import', [StudentController::class, 'import'])->name('students.import');
+
+//student export 
+Route::get('/students/export', [StudentController::class, 'export'])->name('students.export');
+
+//Student template download
+Route::get('/students/template', [StudentController::class, 'template'])->name('students.template');

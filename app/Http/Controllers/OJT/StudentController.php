@@ -11,6 +11,10 @@ use App\Models\Student;
 use Illuminate\Support\Facades\Log;
 
 use Maatwebsite\Excel\Facades\Excel;
+
+use App\Exports\StudentsExport;
+use App\Exports\StudentsTemplateExport;
+
 class StudentController extends Controller
 {
     /**
@@ -112,14 +116,52 @@ class StudentController extends Controller
         return redirect()->route('students.index')->with('success', 'Student deleted successfully');
     }
 
-    public function import (Request $request)
+   public function import(Request $request)
+{
+    // Validate file type
+    $request->validate([
+        'file' => 'required|mimes:xlsx,xls,csv',
+    ]);
+
+    try {
+        
+        $import = new StudentsImport;
+        Excel::import($import, $request->file('file'));
+
+
+        // If import has validation errors
+        if ($import->failures()->isNotEmpty()) {
+
+            $errors = [];
+
+            foreach ($import->failures() as $failure) {
+                $errors[] = "Row {$failure->row()} - " . implode(', ', $failure->errors() ?? []);
+            }
+
+
+            // Return errors to Blade
+            return back()->with('import_errors', $errors);
+        }
+
+        return redirect()
+            ->route('students.index')
+            ->with('success', 'Students imported successfully!');
+
+    } catch (\Exception $e) {
+
+        return back()
+            ->with('error', 'Unexpected error: ' . $e->getMessage());
+    }
+}
+
+
+    public function export()
     {
-        $request -> validate([
-            'file' => 'required|mimes:xlsx,xls,csv',
-        ]);
+        return Excel::download(new StudentsExport, 'students.xlsx');
+    }
 
-        Excel::import(new StudentsImport, $request->file('file'));
-
-        return redirect()->route('students.index')->with('success', 'Students imported successfully');
+    public function template()
+    {
+        return Excel::download(new StudentsTemplateExport, 'students_template.xlsx');
     }
 }
