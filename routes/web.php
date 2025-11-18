@@ -7,22 +7,17 @@ use App\Http\Controllers\EmployerEmployeeController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestController;
+use Illuminate\Support\Facades\Mail;
 
-// Redirect root to students index
+// Root route → go to login
 Route::get('/', function () {
-    return redirect()->route('students.index');
+    return redirect()->route('login.form');
 });
 
 // Static pages
-Route::get('/home', function () {
-    return view('home');
-});
-Route::get('/contact', function () {
-    return view('students.contact');
-})->name('contact');
-Route::get('/about', function () {
-    return view('students.about');
-})->name('about');
+Route::view('/home', 'home');
+Route::view('/contact', 'students.contact')->name('contact');
+Route::view('/about', 'students.about')->name('about');
 
 // Student CRUD
 Route::get('/students', [StudentController::class, 'index'])->name('students.index');
@@ -32,69 +27,51 @@ Route::get('/students/{id}/edit', [StudentController::class, 'edit'])->name('stu
 Route::put('/students/{id}', [StudentController::class, 'update'])->name('students.update');
 Route::delete('/students/{id}', [StudentController::class, 'destroy'])->name('students.destroy');
 
-// No access page
-Route::get('/no-access', function () {
-    return view('no-access');
-})->name('no-access');
-
-// Age check middleware
+// Age check
 Route::get('/welcome', function () {
     return view('welcome-age');
 })->name('welcome')->middleware('check.age');
 
-// User view
-Route::get('/user', function () {
-    return view('user');
-})->name('user');
-
-// -------------------
 // Auth Routes
-// -------------------
-
-// Show register form
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register.form');
+Route::post('/register', [AuthController::class, 'register'])->name('register');
 
-// Handle register form POST
-Route::post('/register', [AuthController::class, 'register'])->name('register.store');
-
-// Show login form
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login.form');
+Route::post('/login', [AuthController::class, 'login'])->name('login');
 
-// Handle login POST
-Route::post('/login', [AuthController::class, 'login'])->name('login.store');
-
-// Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Admin dashboard (only for admin users)
+// Admin Dashboard
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/dashboard', [AuthController::class, 'adminDashboard'])->name('admin.dashboard');
 });
 
-// User dashboard (only for logged-in users)
+// User Dashboard
 Route::middleware(['auth'])->group(function () {
     Route::get('/user/dashboard', [AuthController::class, 'userDashboard'])->name('user.dashboard');
 });
 
-//testing
-Route::get('/form', [TestController::class,'show']);
+// Testing
+Route::get('/form', [TestController::class, 'show']);
+Route::post('/form', [TestController::class, 'submit'])->name('form.submit');
 
-Route::post('/form',[TestController::class,'submit'])->name('form.submit');
-
-//query builder employer
+// Query builder employer
 Route::get('/employers', [EmployerEmployeeController::class, 'index']);
 
-//city
+// City
 Route::get('/cities', [CityTownshipController::class, 'index'])->name('cities.index');
 
-//product
+// Product
 Route::get('/products' , [ProductController::class, 'index'])->name('products.index');
 
-//student import export
+// Excel Import/Export
 Route::post('/students/import', [StudentController::class, 'import'])->name('students.import');
-
-//student export 
 Route::get('/students/export', [StudentController::class, 'export'])->name('students.export');
-
-//Student template download
 Route::get('/students/template', [StudentController::class, 'template'])->name('students.template');
+
+Route::get('/send-test-email', function () {
+    Mail::raw('This is a test email from Laravel using Gmail SMTP.', function ($message) {
+            $message->to('hlaingphyothu97@gmail.com')
+                    ->subject('Laravel Gmail SMTP Test');
+    });
+})->name('send.test.email');

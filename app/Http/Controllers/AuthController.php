@@ -3,52 +3,57 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Admin;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Mail\WelcomeMail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
-    //Show register form
-    public function showRegister() {
-        return view('auth.register');
+    // Show register form
+    public function showRegister()
+    {
+        return view('auth.register'); // resources/views/auth/register.blade.php
     }
 
-    //Handle registration
-   public function register(Request $request)
+    // Handle register POST
+    public function register(Request $request)
     {
         $request->validate([
-            // validate name unique on users table (not admins)
-            'name'=> 'required|string|unique:users,name',
-            'password'=> 'required|string|min:4|confirmed', 
+            'name'     => 'required|string|unique:users,name',
+            'password' => 'required|string|min:4|confirmed',
+            'email'    => 'required|email|unique:users,email',
         ]);
-        
-        // check if this is the first user
+
         $role = User::count() === 0 ? 'admin' : 'user';
 
-        // generate a placeholder email because the users table requires email
-        // use name slug to avoid spaces and a controlled domain
-        $emailLocal = preg_replace('/[^a-z0-9._-]/i', '', strtolower($request->name));
-        $email = $emailLocal . '@local.test';
-
-        User::create([
-            'name'=> $request->name,
-            'email'=> $email,                     // <-- added to satisfy DB
-            'password'=> Hash::make($request->password),
-            'role' => $role,
+        $user = User::create([
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
+            'role'     => $role,
         ]);
 
-        return redirect()->route('login.form')->with('success','User registered successfully.');
+        // Send Welcome email (logged in storage/logs/laravel.log)
+        try {
+            Mail::to($user->email)->send(new WelcomeMail($user));
+        } catch (\Throwable $e) {
+            Log::error("Mail send failed: " . $e->getMessage());
+        }
+
+        return redirect()->route('login.form')
+                         ->with('success', 'Registration successful! Check log for email.');
     }
-    
-    //show login form
+
+    // Show login form
     public function showLogin()
     {
         return view('auth.login');
     }
 
-    //handle login
+    // Login POST
     public function login(Request $request)
     {
         $request->validate([
@@ -56,41 +61,29 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        if(Auth::attempt($request->only('name','password'))) {
+        if (Auth::attempt($request->only('name', 'password'))) {
+
             $user = Auth::user();
-            if($user->role === 'admin') {
-                return redirect()->route('admin.dashboard');
-            } else {
-                return redirect()->route('user.dashboard');
-            }
+
+            return $user->role === 'admin'
+                ? redirect()->route('admin.dashboard')
+                : redirect()->route('user.dashboard');
         }
 
-        return back()->withErrors(['name'=>'Invalid credentials']);
+        return back()->withErrors(['name' => 'Invalid login credentials']);
     }
 
-    //logout
-
+    // Logout
     public function logout()
     {
-        if(Auth::guard('admin')->check()){
-            Auth::guard('admin')->logout();
-        }
-
-        if(Auth::guard('web')->check()){
-            Auth::guard('web')->logout();
-        }
-
+        Auth::logout();
         return redirect()->route('login.form');
     }
-    
-    //Admin dashboard
 
     public function adminDashboard()
     {
         return view('admin.dashboard');
     }
-
-    // User dashboard
 
     public function userDashboard()
     {

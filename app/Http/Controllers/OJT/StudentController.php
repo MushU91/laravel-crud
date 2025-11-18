@@ -117,42 +117,42 @@ class StudentController extends Controller
     }
 
    public function import(Request $request)
-{
-    // Validate file type
-    $request->validate([
-        'file' => 'required|mimes:xlsx,xls,csv',
-    ]);
+    {
+        // Validate file type
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv',
+        ]);
 
-    try {
-        
-        $import = new StudentsImport;
-        Excel::import($import, $request->file('file'));
+        try {
+            
+            $import = new StudentsImport;
+            Excel::import($import, $request->file('file'));
 
 
-        // If import has validation errors
-        if ($import->failures()->isNotEmpty()) {
+            // If import has validation errors
+            if ($import->failures()->isNotEmpty()) {
 
-            $errors = [];
+                $errors = [];
 
-            foreach ($import->failures() as $failure) {
-                $errors[] = "Row {$failure->row()} - " . implode(', ', $failure->errors() ?? []);
+                foreach ($import->failures() as $failure) {
+                    $errors[] = "Row {$failure->row()} - " . implode(', ', $failure->errors() ?? []);
+                }
+
+
+                // Return errors to Blade
+                return back()->with('import_errors', $errors);
             }
 
+            return redirect()
+                ->route('students.index')
+                ->with('success', 'Students imported successfully!');
 
-            // Return errors to Blade
-            return back()->with('import_errors', $errors);
+        } catch (\Exception $e) {
+
+            return back()
+                ->with('error', 'Unexpected error: ' . $e->getMessage());
         }
-
-        return redirect()
-            ->route('students.index')
-            ->with('success', 'Students imported successfully!');
-
-    } catch (\Exception $e) {
-
-        return back()
-            ->with('error', 'Unexpected error: ' . $e->getMessage());
     }
-}
 
 
     public function export()
