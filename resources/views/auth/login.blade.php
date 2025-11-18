@@ -16,3 +16,6 @@
     <input type="password" name="password" placeholder="Password" required>
     <button type="submit">Login</button>
 </form>
+<div>
+    <a href="{{ route('register.form') }}">Don't have an account? Register here.</a>
+</div>

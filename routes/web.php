@@ -10,9 +10,9 @@ use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Mail;
 
 // Root route → go to login
-Route::get('/', function () {
-    return redirect()->route('login.form');
-});
+// Route::get('/', function () {
+//     return redirect()->route('login.form');
+// });
 
 // Static pages
 Route::view('/home', 'home');
@@ -36,7 +36,7 @@ Route::get('/welcome', function () {
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register.form');
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login.form');
+Route::get('/', [AuthController::class, 'showLogin'])->name('login.form');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
