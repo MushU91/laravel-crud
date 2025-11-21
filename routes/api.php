@@ -4,6 +4,7 @@ use App\Http\Controllers\OJT\StudentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CityTownshipController;
 use App\Http\Controllers\EmployerEmployeeController;
+use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestController;
@@ -20,12 +21,20 @@ Route::view('/contact', 'students.contact')->name('contact');
 Route::view('/about', 'students.about')->name('about');
 
 // Student CRUD
-Route::get('/students', [StudentController::class, 'index'])->name('students.index');
+Route::get('/students/list', [StudentController::class, 'index'])->name('students.index');
 Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
 Route::post('/students/store', [StudentController::class, 'store'])->name('students.store');
 Route::get('/students/edit/{id}', [StudentController::class, 'edit'])->name('students.edit');
-Route::put('/students/{id}', [StudentController::class, 'update'])->name('students.update');
-Route::delete('/students/{id}', [StudentController::class, 'destroy'])->name('students.destroy');
+Route::put('/students/update/{id}', [StudentController::class, 'update'])->name('students.update');
+Route::delete('/students/delete/{id}', [StudentController::class, 'destroy'])->name('students.destroy');
+
+//family CRUD
+Route::get('/family/list',[FamilyController::class,'index'])->name('family.index');
+Route::get('/family/create',[FamilyController::class,'create'])->name('family.create');
+Route::post('/family/store',[FamilyController::class,'store'])->name('family.store');
+Route::get('/family/edit/{id}',[FamilyController::class,'edit'])->name('family.edit');
+Route::put('/family/update/{id}',[FamilyController::class,'update'])->name('family.update');
+Route::delete('/family/delete/{id}',[FamilyController::class,'destroy'])->name('family.destroy');
 
 
 Route::get('/age', function(){
