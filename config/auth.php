@@ -43,7 +43,7 @@ return [
 
         //admin
         'admin' => [
-            'driver' => 'session',
+            'driver' => 'session', //session driver
             'provider' => 'admins',
         ],
     ],
@@ -79,6 +79,7 @@ return [
             'model' => App\Models\Admin::class,
         ],
 
+        // query builder example
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

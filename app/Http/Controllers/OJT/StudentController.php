@@ -20,10 +20,20 @@ class StudentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         
         $students = Student::all(); //fetch all rows from DB
+
+        //if API request (POSTMAN/Axios/mobile app)
+        if ($request->wantsJson()){
+            return response()->json([
+                'status' => 'OK',
+                'count' => $students->count(),
+                'students' => $students
+            ], 200);
+        }
+        //web request
         return view('students.index', compact('students'));
 
     }
@@ -31,8 +41,13 @@ class StudentController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
+        if ($request->wantsJson()){
+            return response()->json([
+                'message' => 'OK'
+            ],201);
+        }
         return view('students.create');
     }
 
@@ -59,6 +74,14 @@ class StudentController extends Controller
 
         Student::create($data);
 
+        if ($request->wantsJson()){
+            return response()->json([
+                'message' => 'Added successfully',
+                'status' => 'OK',
+                'student_data' => $data,
+            ],201);
+        }
+
         //3. redirect back to list page
         return redirect()->route('students.index')->with('success', 'Student added successfully');
     }
@@ -81,8 +104,18 @@ class StudentController extends Controller
 
     $url = $request->url();
     Log::info(' url is :' . $url);
+
+    
+    
     
     $student= Student::findOrFail($id);
+
+    if($request->wantsJson()){
+        return response()->json([
+            'status'=> 'OK',
+            'student_data' => $student,
+        ],200);
+    }
     return view('students.edit', compact('student'));
 }
 
@@ -102,16 +135,31 @@ class StudentController extends Controller
         $student= Student::findOrFail($id);   //single student model
         $student->update($request->only(['name','age','address']));
 
+        if($request->wantsJson()){
+            return response()->json([
+                'message' => 'updated successfully',
+                'status' => 'OK',
+                'update_student_data' => $student,
+            ],200);
+        }
+
         return redirect()->route('students.index')->with('success','Student updated Successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request,string $id)
     {
         $student= Student::findOrFail($id);
         $student->delete();
+
+        if($request->wantsJson()){
+            return response()->json([
+                'message' => 'delete successfully',
+                
+            ],200);
+        }
 
         return redirect()->route('students.index')->with('success', 'Student deleted successfully');
     }
